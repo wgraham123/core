@@ -876,7 +876,7 @@ class SqueezeBoxMediaPlayerEntity(SqueezeboxEntity, MediaPlayerEntity):
         if media_content_type:
             media_content_type = media_content_type.lower()
 
-        if media_content_type in [None, "library"]:
+        if not media_content_type or media_content_type == "library":
             return await library_payload(self.hass, self._player, self._browse_data)
 
         if media_content_id and media_source.is_media_source_id(media_content_id):
