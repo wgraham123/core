@@ -44,10 +44,21 @@ async def setup_integration(
         await hass.async_block_till_done(wait_background_tasks=True)
 
 
+@pytest.mark.parametrize(
+    "media_ids",
+    [
+        pytest.param(
+            {"media_content_id": "", "media_content_type": "library"}, id="library"
+        ),
+        pytest.param({"media_content_id": "", "media_content_type": ""}, id="empty"),
+        pytest.param({}, id="omitted"),
+    ],
+)
 async def test_async_browse_media_root(
     hass: HomeAssistant,
     config_entry: MockConfigEntry,
     hass_ws_client: WebSocketGenerator,
+    media_ids: dict[str, str],
 ) -> None:
     """Test the async_browse_media function at the root level."""
 
@@ -57,8 +68,7 @@ async def test_async_browse_media_root(
             "id": 1,
             "type": "media_player/browse_media",
             "entity_id": "media_player.test_player",
-            "media_content_id": "",
-            "media_content_type": "library",
+            **media_ids,
         }
     )
     response = await client.receive_json()
